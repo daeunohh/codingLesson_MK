@@ -1,35 +1,24 @@
 import sys
 sys.stdin = open("input.txt", "r")
 
-def Print(array) :
-    for line in array :
-        print(" ".join(map(str, line)))
-#####
+T = int(input())
+# 여러개의 테스트 케이스가 주어지므로, 각각을 처리합니다.
+for test_case in range(1, T + 1):
+    # ///////////////////////////////////////////////////////////////////////////////////
+    N = int(input())
+    prices = list(map(int, input().split()))
+    # print(prices)
 
-array = []
-for i in range(10):
-    array.append(list(map(int, input().split())))
+    maxPrice = 0
+    result = 0
 
-n = 10
-i = j = 1
+    for i in range(N-1, -1, -1):
+        if prices[i] > maxPrice :
+            maxPrice = prices[i]
+        result += maxPrice - prices[i]
+        
+    print('#' + str(test_case) + ' ' + str(result))
+    # break
+        
 
-#####
-while True :
-    if array[i][j] == 2 : # On Food
-        array[i][j] = 9
-        Print(array)
-        break
-    else :
-        array[i][j] = 9
-    
-    # go right
-    if array[i][j + 1] == 0 or array[i][j + 1] == 2 :
-        j += 1
-    # go down
-    elif array[i + 1][j] == 0 or array[i + 1][j] == 2 :
-        i += 1
-    # dont move
-    else :
-        Print(array)
-        break
-    
+    # ///////////////////////////////////////////////////////////////////////////////////
