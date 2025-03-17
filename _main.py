@@ -1,85 +1,79 @@
-# 기본 제공코드는 임의 수정해도 관계 없습니다. 단, 입출력 포맷 주의
-# 아래 표준 입출력 예제 필요시 참고하세요.
-
-# 표준 입력 예제
-'''
-a = int(input())                        정수형 변수 1개 입력 받는 예제
-b, c = map(int, input().split())        정수형 변수 2개 입력 받는 예제 
-d = float(input())                      실수형 변수 1개 입력 받는 예제
-e, f, g = map(float, input().split())   실수형 변수 3개 입력 받는 예제
-h = input()                             문자열 변수 1개 입력 받는 예제
-'''
-
-# 표준 출력 예제
-'''
-a, b = 6, 3
-c, d, e = 1.0, 2.5, 3.4
-f = "ABC"
-print(a)                                정수형 변수 1개 출력하는 예제
-print(b, end = " ")                     줄바꿈 하지 않고 정수형 변수와 공백을 출력하는 예제
-print(c, d, e)                          실수형 변수 3개 출력하는 예제
-print(f)                                문자열 1개 출력하는 예제
-'''
+import copy
 import sys
 sys.stdin = open("input.txt", "r")
 
 T = int(input())
-# 여러개의 테스트 케이스가 주어지므로, 각각을 처리합니다.
 for test_case in range(1, T + 1):
-    # ///////////////////////////////////////////////////////////////////////////////////
     num = int(input()) 
-    nums = list()
-    minIdx = maxIdx = -1
-    minVal = 9
-    maxVal = 0
-    i = 0
+    if(num == 0):
+        print("#" + str(test_case) + " 0 0")
+    nums_min = list()
+    sortedNums_min = list()
+    sortedNums_max = list()
+
     while num > 0 :
         digit = num % 10
-        nums.append(digit)
+        nums_min.append(digit)
         num = int(num / 10)
-        if digit < minVal :
-            minIdx = i
-            minVal = digit
-        if digit > maxVal:
-            maxIdx = i
-            maxVal = digit
-        i += 1
-    # print(nums)
-    # print(minVal, maxVal)
-
-    # make minNum
-    tmp = nums[-1]
-    nums[-1] = nums[minIdx]
-    nums[minIdx] = tmp
-    # print(nums)
-
-    minNum = 0
-    for i in range(len(nums)):
-        minNum += nums[i] * (10**i)
-    # print(minNum)
+    N = len(nums_min)
+    nums_min.reverse()
+    nums_max = list(copy.deepcopy(nums_min))
+    # print(nums_min, nums_max)
     
-    # Rollback
-    tmp = nums[-1]
-    nums[-1] = nums[minIdx]
-    nums[minIdx] = tmp
-    # print(nums)
+    for i in range(N):
+        sortedNums_min.append([nums_min[i], -i])
+        sortedNums_max.append([nums_min[i], i])
+    sortedNums_min = sorted(sortedNums_min)
+    sortedNums_max = sorted(sortedNums_max, reverse=True)
+    # print(sortedNums_min,'\n', sortedNums_max)
+    # Get nums_min
+    changed = False
+    for i in range(N):
+        for j in range(N):
+            sv = sortedNums_min[j][0]
+            si = -sortedNums_min[j][1]
+            if i == 0 and sv == 0:
+                continue
+            if nums_min[i] <= sv :
+                break
+            if nums_min[i] > sv and i <= si:
+                tmp = nums_min[i]
+                nums_min[i] = sv
+                nums_min[si] = tmp
+                changed = True
+                break
+        if changed:
+            break
+    # print(nums_min)
+    # Get nums_max
+    changed = False
+    for i in range(N):
+        for j in range(N):
+            sv = sortedNums_max[j][0]
+            si = sortedNums_max[j][1]
+            if i == 0 and sv == 0:
+                continue
+            if nums_max[i] >= sv :
+                break
+            if nums_max[i] < sv and i <= si:
+                tmp = nums_max[i]
+                nums_max[i] = sv
+                nums_max[si] = tmp
+                changed = True
+                break
+        if changed:
+            break
+    
+    minVal = 0
+    maxVal = 0
+    for i, v in (enumerate(nums_min)):
+        minVal += v * 10**(N - i - 1)
+    for i, v in (enumerate(nums_max)):
+        maxVal += v * 10**(N - i - 1)
+    # print(minVal) 
 
-    # make maxNum
-    tmp = nums[-1]
-    nums[-1] = nums[maxIdx]
-    nums[maxIdx] = tmp
-    # print(nums)
+    print("#" + str(test_case) + " " + str(minVal) + " " + str(maxVal))
 
-    maxNum = 0
-    for i in range(len(nums)):
-        maxNum += nums[i] * (10**i)
-    # print(maxNum)
 
-    print("#" + str(test_case) + " " + str(minNum) + " " + str(maxNum))
 
-    '''
 
-        이 부분에 여러분의 알고리즘 구현이 들어갑니다.
-
-    '''
-    # ///////////////////////////////////////////////////////////////////////////////////
