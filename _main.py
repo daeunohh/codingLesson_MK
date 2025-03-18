@@ -5,8 +5,6 @@ sys.stdin = open("input.txt", "r")
 T = int(input())
 for test_case in range(1, T + 1):
     num = int(input()) 
-    if(num == 0):
-        print("#" + str(test_case) + " 0 0")
     nums_min = list()
     sortedNums_min = list()
     sortedNums_max = list()
