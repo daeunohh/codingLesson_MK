@@ -1,29 +1,24 @@
-import copy
 import sys
 sys.stdin = open("input.txt", "r")
 
+import copy
+
 T = int(input())
 for test_case in range(1, T + 1):
-    num = int(input()) 
-    nums_min = list()
-    sortedNums_min = list()
-    sortedNums_max = list()
+    minVal = -1
+    maxVal = -1
+    nums = list(map(int, input()))
+    N = len(nums)
 
-    while num > 0 :
-        digit = num % 10
-        nums_min.append(digit)
-        num = int(num / 10)
-    N = len(nums_min)
-    nums_min.reverse()
-    nums_max = list(copy.deepcopy(nums_min))
-    # print(nums_min, nums_max)
-    
+    sortedNums_min = list()
+    sortedNums_max = list()    
     for i in range(N):
-        sortedNums_min.append([nums_min[i], -i])
-        sortedNums_max.append([nums_min[i], i])
+        sortedNums_min.append([nums[i], -i])
+        sortedNums_max.append([nums[i], i])
     sortedNums_min = sorted(sortedNums_min)
     sortedNums_max = sorted(sortedNums_max, reverse=True)
     # print(sortedNums_min,'\n', sortedNums_max)
+
     # Get nums_min
     changed = False
     for i in range(N):
@@ -32,17 +27,20 @@ for test_case in range(1, T + 1):
             si = -sortedNums_min[j][1]
             if i == 0 and sv == 0:
                 continue
-            if nums_min[i] <= sv :
+            if nums[i] <= sv :
                 break
-            if nums_min[i] > sv and i <= si:
-                tmp = nums_min[i]
-                nums_min[i] = sv
-                nums_min[si] = tmp
+            if nums[i] > sv and i <= si:
+                nums[i], nums[si] = nums[si], nums[i]
+                minVal = ''.join(map(str,nums))
+                nums[i], nums[si] = nums[si], nums[i]
                 changed = True
                 break
         if changed:
             break
+    if not changed:
+        minVal = ''.join(map(str,nums))
     # print(nums_min)
+        
     # Get nums_max
     changed = False
     for i in range(N):
@@ -51,25 +49,18 @@ for test_case in range(1, T + 1):
             si = sortedNums_max[j][1]
             if i == 0 and sv == 0:
                 continue
-            if nums_max[i] >= sv :
+            if nums[i] >= sv :
                 break
-            if nums_max[i] < sv and i <= si:
-                tmp = nums_max[i]
-                nums_max[i] = sv
-                nums_max[si] = tmp
+            if nums[i] < sv and i <= si:
+                nums[i], nums[si] = nums[si], nums[i]
+                maxVal = ''.join(map(str,nums))
                 changed = True
                 break
         if changed:
             break
+    if not changed:
+        maxVal = ''.join(map(str,nums))
     
-    minVal = 0
-    maxVal = 0
-    for i, v in (enumerate(nums_min)):
-        minVal += v * 10**(N - i - 1)
-    for i, v in (enumerate(nums_max)):
-        maxVal += v * 10**(N - i - 1)
-    # print(minVal) 
-
     print("#" + str(test_case) + " " + str(minVal) + " " + str(maxVal))
 
 
